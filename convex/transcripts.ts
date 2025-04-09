@@ -3,6 +3,8 @@ import { internalAction } from "./_generated/server";
 
 import { Innertube } from "youtubei.js/web";
 
+import { GoogleGenAI } from "@google/genai";
+
 export const getYoutubeTranscript = internalAction({
 	args: {
 		url: v.string(),
@@ -22,7 +24,25 @@ export const getYoutubeTranscript = internalAction({
 
 		console.log(transcriptText);
 		return transcriptText;
-		// const transcript = await getYoutubeTranscript(args.url);
-		// return transcript;
+	},
+});
+
+export const generateSummary = internalAction({
+	args: {
+		transcript: v.string(),
+	},
+	handler: async (ctx, args) => {
+		const genAI = new GoogleGenAI({
+			apiKey: process.env.GEMINI_API_KEY,
+		});
+
+		const response = await genAI.models.generateContent({
+			model: "gemini-2.5-pro-exp-03-25",
+			contents:
+				"You are a helpful assistant who needs to summarize the following transcript from a youtube video. Please provide a few paragraphs that explain the content of the video and also provide a lot of keywords that I could use to improve SEO. Just begin with the summary. Please output in markdown formart. Here is the transcript: \n\n" +
+				args.transcript,
+		});
+
+		return response.text;
 	},
 });
