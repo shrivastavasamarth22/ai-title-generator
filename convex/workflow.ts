@@ -32,6 +32,15 @@ export const generateTitleWorkflow = workflow.define({
 			}
 		);
 
-		return summary;
+		const titles: string[] = await step.runAction(
+			internal.agents.storytellingAgent,
+			{
+				summary: summary,
+			}
+		);
+
+		console.log("Generated titles:", titles);
+
+		return titles;
 	},
 });

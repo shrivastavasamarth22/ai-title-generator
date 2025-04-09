@@ -2,8 +2,7 @@ import { v } from "convex/values";
 import { internalAction } from "./_generated/server";
 
 import { Innertube } from "youtubei.js/web";
-
-import { GoogleGenAI } from "@google/genai";
+import { genAI } from ".";
 
 export const getYoutubeTranscript = internalAction({
 	args: {
@@ -34,10 +33,6 @@ export const generateSummary = internalAction({
 		transcript: v.string(),
 	},
 	handler: async (ctx, args) => {
-		const genAI = new GoogleGenAI({
-			apiKey: process.env.GEMINI_API_KEY,
-		});
-
 		const response = await genAI.models.generateContent({
 			model: "gemini-2.5-pro-exp-03-25",
 			contents:
