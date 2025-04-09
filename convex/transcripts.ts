@@ -22,7 +22,9 @@ export const getYoutubeTranscript = internalAction({
 			.map((segment) => segment.snippet.text ?? "")
 			.join(" ");
 
-		console.log(transcriptText);
+		if (!transcriptText) {
+			throw new Error("Transcript not found or empty.");
+		}
 		return transcriptText;
 	},
 });
@@ -42,6 +44,10 @@ export const generateSummary = internalAction({
 				"You are a helpful assistant who needs to summarize the following transcript from a youtube video. Please provide a few paragraphs that explain the content of the video and also provide a lot of keywords that I could use to improve SEO. Just begin with the summary. Please output in markdown formart. Here is the transcript: \n\n" +
 				args.transcript,
 		});
+
+		if (!response || !response.text) {
+			throw new Error("No response from Gemini.");
+		}
 
 		return response.text;
 	},
