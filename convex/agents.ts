@@ -174,3 +174,303 @@ User summary: ${args.summary}`;
 		}
 	},
 });
+
+export const dataAgent = internalAction({
+	args: { summary: v.string() },
+	handler: async (ctx, args) => {
+		const AgentSchema = z.object({
+			titles: z.array(z.string()),
+		});
+
+		// Set up the system prompt and user content
+		const prompt = `You are an expert YouTube title creator specializing in data-driven content. Your titles should:
+
+1. Title Structure:
+- Include specific numbers, statistics, and metrics
+- Use data points to create credibility
+- Incorporate percentages, growth rates, and timeframes
+- Length: 40-60 characters for optimal visibility
+
+2. Content Focus:
+- Emphasize measurable results and outcomes
+- Include before/after metrics
+- Reference industry benchmarks
+- Highlight performance improvements
+- Use data-backed claims
+
+3. Style Elements:
+- Lead with compelling statistics
+- Use numbers in both numeric and written form
+- Include timeframes and durations
+- Reference ROI and growth metrics
+- Compare metrics when relevant
+
+Examples:
+"10X Performance Boost: The Data Behind Our Success"
+"How We Increased Conversion Rate by 156% in 30 Days"
+"$0 to $100K MRR: Our 12-Month Growth Analysis"
+"The 3 Metrics That Predict Startup Success (Data Study)"
+"We Analyzed 1000+ Successful Apps - Here's What Works"
+
+Generate ${TITLES_PER_AGENT} data-driven titles that combine compelling statistics with clear value propositions. Format your response as valid JSON with a single 'titles' array containing string elements.
+
+User summary: ${args.summary}`;
+
+		// Call the Gemini model
+		const response = await genAI.models.generateContent({
+			model: "gemini-2.5-pro-exp-03-25",
+			contents: prompt,
+		});
+		const text = response.text;
+
+		if (!text) {
+			throw new Error("No response from Gemini.");
+		}
+
+		try {
+			// Extract JSON from the response text
+			const jsonMatch =
+				text.match(/```json\n([\s\S]*?)\n```/) ||
+				text.match(/{[\s\S]*}/) ||
+				text.match(/\[\s*".*"\s*\]/);
+
+			const jsonContent = jsonMatch
+				? jsonMatch[0].replace(/```json\n|```/g, "")
+				: text;
+			const parsed = JSON.parse(jsonContent);
+
+			// Validate the response against our schema
+			const validatedData = AgentSchema.parse(parsed);
+			return validatedData.titles;
+		} catch (error) {
+			console.error("Failed to parse response:", error);
+			console.log("Raw response:", text);
+			throw new Error("Failed to generate titles from Google GenAI");
+		}
+	},
+});
+
+export const questionAgent = internalAction({
+	args: { summary: v.string() },
+	handler: async (ctx, args) => {
+		const AgentSchema = z.object({
+			titles: z.array(z.string()),
+		});
+
+		// Set up the system prompt and user content
+		const prompt = `You are an expert YouTube title creator specializing in question-format titles. Your titles should:
+
+1. Title Structure:
+- Start with engaging question words (Why, How, What, Is, Can, Should)
+- Create thought-provoking queries
+- Length: 40-60 characters for optimal visibility
+- End with question marks
+
+2. Question Types:
+- Challenge common assumptions
+- Address pain points
+- Pose controversial viewpoints
+- Present intriguing scenarios
+- Question established practices
+
+3. Style Elements:
+- Use rhetorical questions
+- Create curiosity gaps
+- Challenge viewer perspectives
+- Address common misconceptions
+- Prompt critical thinking
+
+Examples:
+"Is Your Code Actually Production Ready?"
+"Why Do Senior Developers Hate This Pattern?"
+"What's Really Killing Your App Performance?"
+"Could AI Replace Backend Engineers by 2025?"
+"Are You Making These 5 TypeScript Mistakes?"
+
+Generate ${TITLES_PER_AGENT} engaging question-format titles that provoke thought and drive engagement. Format your response as valid JSON with a single 'titles' array containing string elements.
+
+User summary: ${args.summary}`;
+
+		// Call the Gemini model
+		const response = await genAI.models.generateContent({
+			model: "gemini-2.5-pro-exp-03-25",
+			contents: prompt,
+		});
+		const text = response.text;
+
+		if (!text) {
+			throw new Error("No response from Gemini.");
+		}
+
+		try {
+			// Extract JSON from the response text
+			const jsonMatch =
+				text.match(/```json\n([\s\S]*?)\n```/) ||
+				text.match(/{[\s\S]*}/) ||
+				text.match(/\[\s*".*"\s*\]/);
+
+			const jsonContent = jsonMatch
+				? jsonMatch[0].replace(/```json\n|```/g, "")
+				: text;
+			const parsed = JSON.parse(jsonContent);
+
+			// Validate the response against our schema
+			const validatedData = AgentSchema.parse(parsed);
+			return validatedData.titles;
+		} catch (error) {
+			console.error("Failed to parse response:", error);
+			console.log("Raw response:", text);
+			throw new Error("Failed to generate titles from Google GenAI");
+		}
+	},
+});
+
+export const howToAgent = internalAction({
+	args: { summary: v.string() },
+	handler: async (ctx, args) => {
+		const AgentSchema = z.object({
+			titles: z.array(z.string()),
+		});
+
+		// Set up the system prompt and user content
+		const prompt = `You are an expert YouTube title creator specializing in how-to content. Your titles should:
+
+1. Title Structure:
+- Start with "How to" or similar instructional phrases
+- Be clear and actionable
+- Length: 40-60 characters for optimal visibility
+- Include specific outcomes
+
+2. Content Focus:
+- Emphasize practical solutions
+- Promise specific results
+- Address common challenges
+- Highlight unique methods
+- Include skill level when relevant
+
+3. Style Elements:
+- Use action verbs
+- Specify timeframes when applicable
+- Include tool/technology names
+- Mention difficulty level
+- Add parenthetical context
+
+Examples:
+"How to Deploy a Full-Stack App in 10 Minutes"
+"How to Write Clean Code (Senior Dev Tips)"
+"How to Build a REST API the Right Way"
+"How to Debug Like a Senior Developer"
+"How to Optimize React Performance in 5 Steps"
+
+Generate ${TITLES_PER_AGENT} clear, actionable how-to titles that promise valuable learning outcomes. Format your response as valid JSON with a single 'titles' array containing string elements.
+
+User summary: ${args.summary}`;
+
+		// Call the Gemini model
+		const response = await genAI.models.generateContent({
+			model: "gemini-2.5-pro-exp-03-25",
+			contents: prompt,
+		});
+		const text = response.text;
+
+		if (!text) {
+			throw new Error("No response from Gemini.");
+		}
+
+		try {
+			// Extract JSON from the response text
+			const jsonMatch =
+				text.match(/```json\n([\s\S]*?)\n```/) ||
+				text.match(/{[\s\S]*}/) ||
+				text.match(/\[\s*".*"\s*\]/);
+
+			const jsonContent = jsonMatch
+				? jsonMatch[0].replace(/```json\n|```/g, "")
+				: text;
+			const parsed = JSON.parse(jsonContent);
+
+			// Validate the response against our schema
+			const validatedData = AgentSchema.parse(parsed);
+			return validatedData.titles;
+		} catch (error) {
+			console.error("Failed to parse response:", error);
+			console.log("Raw response:", text);
+			throw new Error("Failed to generate titles from Google GenAI");
+		}
+	},
+});
+
+export const listicleAgent = internalAction({
+	args: { summary: v.string() },
+	handler: async (ctx, args) => {
+		const AgentSchema = z.object({
+			titles: z.array(z.string()),
+		});
+
+		// Set up the system prompt and user content
+		const prompt = `You are an expert YouTube title creator specializing in list-format content. Your titles should:
+
+1. Title Structure:
+- Start with a number
+- Use odd numbers when possible (they perform better)
+- Length: 40-60 characters for optimal visibility
+- Include clear value proposition
+
+2. Content Focus:
+- Emphasize quantity of insights
+- Promise comprehensive coverage
+- Address multiple aspects
+- Include unexpected items
+- Highlight exclusive tips
+
+3. Style Elements:
+- Use numbers (preferably 3-10 items)
+- Include powerful adjectives
+- Add parenthetical context
+- Specify experience level
+- Mention time savings
+
+Examples:
+"7 VS Code Tricks Most Developers Don't Know"
+"5 Backend Patterns That Senior Devs Love"
+"3 Fatal AWS Mistakes (And How to Avoid Them)"
+"9 React Performance Tips You Can't Ignore"
+"5 Docker Secrets That Changed My Life"
+
+Generate ${TITLES_PER_AGENT} engaging list-format titles that promise multiple valuable insights. Format your response as valid JSON with a single 'titles' array containing string elements.
+
+User summary: ${args.summary}`;
+
+		// Call the Gemini model
+		const response = await genAI.models.generateContent({
+			model: "gemini-2.5-pro-exp-03-25",
+			contents: prompt,
+		});
+		const text = response.text;
+
+		if (!text) {
+			throw new Error("No response from Gemini.");
+		}
+
+		try {
+			// Extract JSON from the response text
+			const jsonMatch =
+				text.match(/```json\n([\s\S]*?)\n```/) ||
+				text.match(/{[\s\S]*}/) ||
+				text.match(/\[\s*".*"\s*\]/);
+
+			const jsonContent = jsonMatch
+				? jsonMatch[0].replace(/```json\n|```/g, "")
+				: text;
+			const parsed = JSON.parse(jsonContent);
+
+			// Validate the response against our schema
+			const validatedData = AgentSchema.parse(parsed);
+			return validatedData.titles;
+		} catch (error) {
+			console.error("Failed to parse response:", error);
+			console.log("Raw response:", text);
+			throw new Error("Failed to generate titles from Google GenAI");
+		}
+	},
+});
