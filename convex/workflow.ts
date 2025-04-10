@@ -32,15 +32,13 @@ export const generateTitleWorkflow = workflow.define({
 			}
 		);
 
-		const titles: string[] = await step.runAction(
-			internal.agents.storytellingAgent,
-			{
-				summary: summary,
-			}
-		);
+		const titlePool: string[][] = await Promise.all([
+			step.runAction(internal.agents.storytellingAgent, { summary }),
+			step.runAction(internal.agents.theoAgent, { summary }),
+		]);
 
-		console.log("Generated titles:", titles);
+		const allTitles = titlePool.flat();
 
-		return titles;
+		return allTitles;
 	},
 });
