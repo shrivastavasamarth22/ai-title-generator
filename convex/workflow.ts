@@ -35,6 +35,10 @@ export const generateTitleWorkflow = workflow.define({
 		const titlePool: string[][] = await Promise.all([
 			step.runAction(internal.agents.storytellingAgent, { summary }),
 			step.runAction(internal.agents.theoAgent, { summary }),
+			step.runAction(internal.agents.dataAgent, { summary }),
+			// step.runAction(internal.agents.questionAgent, { summary }),
+			// step.runAction(internal.agents.howToAgent, { summary }),
+			// step.runAction(internal.agents.listicleAgent, { summary }),
 		]);
 
 		const allTitles = titlePool.flat();

@@ -9,7 +9,7 @@ export const getYoutubeTranscript = internalAction({
 		url: v.string(),
 	},
 	handler: async (ctx, args) => {
-		const videoId = args.url.split("v=")[1];
+		const videoId = args.url.split("v=")[1].split("&")[0];
 		const youtube = await Innertube.create({
 			lang: "en",
 			location: "US",
